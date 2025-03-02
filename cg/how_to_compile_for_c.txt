@@ -1,0 +1,2 @@
+gcc lineloop.c -o lineloop -lglut -lGLU -lGL -lm
+the -lm is to link the math library
