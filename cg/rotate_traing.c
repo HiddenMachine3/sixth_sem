@@ -23,14 +23,16 @@ void draw()
     glLoadIdentity();
 
     glRotatef(-s * 360, 0, 0, 1);
+    glRotatef(-s * 360*0.5, 1, 0, 0);
+
 
     glScalef(side, side, 0);
 
     glBegin(GL_TRIANGLES);
 
-    glVertex2d(0, 1);
-    glVertex2d(cos(3.14152/6.0), -sin(3.14152/6.0));
-    glVertex2d(-cos(3.14152/6.0), -sin(3.14152/6.0));
+    glVertex3d(0, 1, 0);
+    glVertex3d(cos(3.14152 / 6.0), -sin(3.14152 / 6.0), 0);
+    glVertex3d(-cos(3.14152 / 6.0), -sin(3.14152 / 6.0), 0);
 
     glEnd();
     glFlush();
