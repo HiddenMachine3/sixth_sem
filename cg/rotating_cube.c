@@ -4,12 +4,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-// #include "vec.h"
 
 const int WIDTH = 500, HEIGHT = 500;
-float cameraPos[] = {0, 0, -1};
-float cameraAngles[] = {0.0, 0.0, 1.0};
-float cameraDir[] = {0.0, 0.0, 0.0};
+float cameraPos[] = {0, 0, -2};
+float cameraAngles[] = {0.0, 0.0, 0.0};
 
 float cube[9][3] = {
     {1, 1, 1},
@@ -41,6 +39,9 @@ void draw_cube()
     glPushMatrix();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    float cameraDir[] = {0,0,1};
+    
 
     gluLookAt(cameraPos[0], cameraPos[1], cameraPos[2], cameraPos[0], cameraPos[1], cameraPos[2] + 1, 0, 1, 0);
 
@@ -90,7 +91,6 @@ void keyboard(unsigned char key, int x, int y)
         break;
 
     case 'i':
-        // add(cameraPos, cameraPos, cameraDir, 3);
         cameraPos[2] += 0.05;
         break;
     case 'k':
