@@ -11,7 +11,8 @@ const float pi = 3.141527;
 
 float cameraPos[] = {0, 0, -2};
 float cameraAngles[] = {0.0, 0.0, 0.0};
-float cameraDir[3] = {0, 0, 0}, lateralCameraDir[3], up[] = {0, 1, 0}, origCameraDir[] = {0, 0, 1};
+float cameraDir[3] = {0, 0, 1}, right[3] = {1, 0, 0}, up[3] = {0, 1, 0},
+      origCameraDir[] = {0, 0, 1}, origUp[] = {0, 1, 0}, origRight[] = {1, 0, 0};
 
 float cube[9][3] = {
     {1, 1, 1},
@@ -49,7 +50,8 @@ void draw_cube()
     // glRotatef(cameraAngles[2] * pi / 180.0f, 0, 0, 1);
     float center[3];
     add(center, cameraPos, cameraDir, 3);
-    gluLookAt(cameraPos[0], cameraPos[1], cameraPos[2], center[0], center[1], center[2] + 1, up[0], up[1], up[2]);
+    gluLookAt(cameraPos[0], cameraPos[1], cameraPos[2],
+        center[0], center[1], center[2], up[0], up[1], up[2]);
 
     glScalef(side, side, side);
 
@@ -77,7 +79,6 @@ void draw()
 
 void keyboard(unsigned char key, int x, int y)
 {
-    cross(lateralCameraDir, cameraDir, up, 3);
     switch (key)
     {
     case 'k':
@@ -101,11 +102,11 @@ void keyboard(unsigned char key, int x, int y)
     case 's':
         sub(cameraPos, cameraPos, cameraDir, 3);
         break;
-    case 'a':
-        sub(cameraPos, cameraPos, lateralCameraDir, 3);
-        break;
     case 'd':
-        add(cameraPos, cameraPos, lateralCameraDir, 3);
+        sub(cameraPos, cameraPos, right, 3);
+        break;
+    case 'a':
+        add(cameraPos, cameraPos, right, 3);
         break;
     case ' ':
         add(cameraPos, cameraPos, up, 3);
@@ -114,10 +115,10 @@ void keyboard(unsigned char key, int x, int y)
         sub(cameraPos, cameraPos, up, 3);
         break;
     }
-    for (int i = 0; i < 3; i++)
-        if (cameraAngles[i] > 2 * pi)
-            cameraAngles[i] -= 2 * pi;
+
     rotate(cameraDir, origCameraDir, cameraAngles);
+    rotate(up, origUp, cameraAngles);
+    rotate(right, origRight, cameraAngles);
 }
 
 void setup(int *argc, char **argv)
