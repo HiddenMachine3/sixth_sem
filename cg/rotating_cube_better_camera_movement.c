@@ -82,6 +82,7 @@ void keyboard(unsigned char key, int x, int y)
     {
     case 'k':
         cameraAngles[0] += 0.5;
+        // cameraAngles[0] %= 2*pi;
         break;
     case 'i':
         cameraAngles[0] -= 0.5;
@@ -107,12 +108,15 @@ void keyboard(unsigned char key, int x, int y)
         add(cameraPos, cameraPos, lateralCameraDir, 3);
         break;
     case ' ':
-        add(cameraPos, cameraPos, up,3);
+        add(cameraPos, cameraPos, up, 3);
         break;
     case 'c':
-        sub(cameraPos, cameraPos, up,3);
+        sub(cameraPos, cameraPos, up, 3);
         break;
     }
+    for (int i = 0; i < 3; i++)
+        if (cameraAngles[i] > 2 * pi)
+            cameraAngles[i] -= 2 * pi;
     rotate(cameraDir, origCameraDir, cameraAngles);
 }
 
