@@ -139,8 +139,8 @@ void rotate(float res[], float vec[], float angles[])
     Rz[0][1] = -sin(angles[2]);
     Rz[1][0] = sin(angles[2]);
 
-    mat_mul(I1, Rx, 3, 3, Ry, 3, 3);
-    mat_mul(R, I1, 3, 3, Rz, 3, 3);
+    mat_mul(I1, Rz, 3, 3, Ry, 3, 3);
+    mat_mul(R, I1, 3, 3, Rx, 3, 3);
 
     printf("Rx\n");
     for (int i = 0; i < 3; i++, printf("\n"))
