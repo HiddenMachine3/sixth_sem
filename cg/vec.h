@@ -23,6 +23,20 @@ void cross(float res[], float a[], float b[], int n)
     res[2] = a[0] * b[1] - a[1] * b[0];
 }
 
+float dot(float a[], float b[], int n)
+{
+    float res = 0;
+    for (int i = 0; i < n; res += a[i] * b[i], i++)
+        ;
+    return res;
+}
+
+float max(float a, float b){
+    if(a>b)
+        return a;
+    return b;
+}
+
 float getMag(float vec[], int n)
 {
     float mag = 0;
