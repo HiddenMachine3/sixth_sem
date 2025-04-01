@@ -155,8 +155,8 @@ void draw_teapot()
 
 void draw()
 {
-    draw_teapot();
-    // draw_torus();
+    // draw_teapot();
+    draw_torus();
 }
 
 void draw_torus()
