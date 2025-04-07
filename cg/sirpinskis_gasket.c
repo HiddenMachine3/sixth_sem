@@ -13,6 +13,7 @@ float tetrahedron_points[4][3] = {
     {0, 0, 0},
     {1, 0, 1},
 };
+float colors[4][3];
 
 void copy_array(float src[], float dest[], int n)
 {
@@ -22,54 +23,61 @@ void copy_array(float src[], float dest[], int n)
     }
 }
 
-void draw_gasket_face(float** points, int n)
+void draw_gasket(float points[4][3], int n, float colors[4][3])
 {
+    static int face_idx[4][3] = {{0, 1, 2}, {0, 3, 1}, {1, 3, 2}, {0, 2, 3}};
     if (n <= 0)
     {
-        for (int i = 0; i < 3; i++)
+        for (int f = 0; f < 4; f++)
         {
-            glVertex3f(points[i][0], points[i][1], points[i][2]);
+            glBegin(GL_TRIANGLES);
+            glColor3f(colors[f][0], colors[f][1], colors[f][2]);
+            for (int p = 0; p < 3; p++)
+                glVertex3f(points[face_idx[f][p]][0], points[face_idx[f][p]][1], points[face_idx[f][p]][2]);
+            glEnd();
         }
     }
     else
     {
-        float **mid = (float **)malloc(3 * sizeof(float *));
-        float ***new_triangles = (float ***)malloc(3 * sizeof(float **));
-        for (int i = 0; i < 3; i++)
+        float mid[6][3];
+
+        float new_points[4][4][3];
+
+        for (int j = 0; j < 3; j++)
         {
-            mid[i] = (float *)malloc(3 * sizeof(float));
-            new_triangles[i] = (float **)malloc(3 * sizeof(float *));
-            for (int j = 0; j < 3; j++)
-            {
-                new_triangles[i][j] = (float *)malloc(3 * sizeof(float));
-            }
+            mid[0][j] = (points[0][j] + points[1][j]) / 2;
+            mid[1][j] = (points[1][j] + points[2][j]) / 2;
+            mid[2][j] = (points[0][j] + points[2][j]) / 2;
+            mid[3][j] = (points[0][j] + points[3][j]) / 2;
+            mid[4][j] = (points[1][j] + points[3][j]) / 2;
+            mid[5][j] = (points[2][j] + points[3][j]) / 2;
         }
 
+        copy_array(points[0], new_points[0][0], 3);
+        copy_array(mid[0], new_points[0][1], 3);
+        copy_array(mid[2], new_points[0][2], 3);
+        copy_array(mid[3], new_points[0][3], 3);
 
-        for (int i = 0; i < 3; i++)
-        {
-            mid[i][0] = (points[i][0] + points[(i + 1) % 3][0]) / 2;
-            mid[i][1] = (points[i][1] + points[(i + 1) % 3][1]) / 2;
-            mid[i][2] = (points[i][2] + points[(i + 1) % 3][2]) / 2;
-        }
+        copy_array(mid[0], new_points[1][0], 3);
+        copy_array(points[1], new_points[1][1], 3);
+        copy_array(mid[1], new_points[1][2], 3);
+        copy_array(mid[4], new_points[1][3], 3);
 
-        copy_array(points[0], new_triangles[0][0], 3);
-        copy_array(mid[0], new_triangles[0][1], 3);
-        copy_array(mid[2], new_triangles[0][2], 3);
+        copy_array(mid[2], new_points[2][0], 3);
+        copy_array(mid[1], new_points[2][1], 3);
+        copy_array(points[2], new_points[2][2], 3);
+        copy_array(mid[5], new_points[2][3], 3);
 
-        copy_array(mid[0], new_triangles[1][0], 3);
-        copy_array(points[1], new_triangles[1][1], 3);
-        copy_array(mid[1], new_triangles[1][2], 3);
+        copy_array(mid[3], new_points[3][0], 3);
+        copy_array(mid[4], new_points[3][1], 3);
+        copy_array(mid[5], new_points[3][2], 3);
+        copy_array(points[3], new_points[3][3], 3);
 
-        copy_array(mid[1], new_triangles[2][0], 3);
-        copy_array(points[2], new_triangles[2][1], 3);
-        copy_array(mid[2], new_triangles[2][2], 3);
-
-        draw_gasket_face(new_triangles[0], n - 1);
-        draw_gasket_face(new_triangles[1], n - 1);
-        draw_gasket_face(new_triangles[2], n - 1);
+        for (int i = 0; i < 4; i++)
+            draw_gasket(new_points[i], n - 1, colors);
     }
 }
+
 void draw_tetrahedron()
 {
     glMatrixMode(GL_MODELVIEW);
@@ -80,27 +88,7 @@ void draw_tetrahedron()
     glRotatef(rot_speed * 360 * 0.5, 0, 0, 1);
     glRotatef(rot_speed * 360 * 0.3, 0, 1, 0);
 
-    float ** points = (float **)malloc(3 * sizeof(float *));
-    for (int i = 0; i < 3; i++)
-    {
-        points[i] = (float *)malloc(3 * sizeof(float));
-    }
-
-    for (int i = 0; i < 4; i++)
-    {
-        int next_i = (i + 1) % 4, next_next_i = (i + 2) % 4;
-
-        glColor3f((i + 1) % 5 / 4.0, (i + 1) % 5 / 4.0, (i + 1) % 5 / 4.0);
-        glBegin(GL_TRIANGLES);
-
-        copy_array(tetrahedron_points[i], points[0], 3);
-        copy_array(tetrahedron_points[next_i], points[1], 3);
-        copy_array(tetrahedron_points[next_next_i], points[2], 3);
-
-        draw_gasket_face(points, steps);
-
-        glEnd();
-    }
+    draw_gasket(tetrahedron_points, steps, colors);
 }
 
 void draw()
@@ -131,6 +119,10 @@ void setup(int *argc, char **argv)
         for (int j = 0; j < 3; j++)
             tetrahedron_points[i][j] -= 0.5;
     }
+
+    // init the face colors
+    for (int i = 0; i < 4; i++)
+        colors[i][0] = colors[i][1] = colors[i][2] = (i + 1) % 5 / 4.0;
 }
 
 int main(int argc, char **argv)
