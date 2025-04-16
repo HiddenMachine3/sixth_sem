@@ -1,5 +1,7 @@
 *.md
 *.pem
+*.pdf
+
 mla/Lab4/VOCdevkit/
 
 *.tar
