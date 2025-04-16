@@ -3,3 +3,5 @@
 mla/Lab4/VOCdevkit/
 
 *.tar
+mla/Lab9/train.csv
+mla/Lab9/test.csv
