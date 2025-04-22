@@ -10,8 +10,8 @@ int draw_BLA()
 
     int dx = abs(endx - startx), dy = abs(endy - starty);
     
-    int sx = startx < endx ? 1 : -1;
-    int sy = starty < endy ? 1 : -1;
+    int inc_x = startx < endx ? 1 : -1;
+    int inc_y = starty < endy ? 1 : -1;
     int err = dx-dy;
     int e2;
 
@@ -23,11 +23,11 @@ int draw_BLA()
 
         e2 = 2*err;
         if (e2 > -dy){
-            x += sx;
+            x += inc_x;
             err -= dy;
         }
         if (e2 < dx){
-            y += sy;
+            y += inc_y;
             err += dx;
         }
     }
